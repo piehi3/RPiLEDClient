@@ -54,15 +54,15 @@ public class MainActivity extends AppCompatActivity {
         colorWheel.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+
+                if(event.getAction()==MotionEvent.ACTION_DOWN)
+                    updateConnectionStatus();
                 if((event.getAction()==MotionEvent.ACTION_DOWN||true)&&isConnected){
                     float x=event.getX()-(size.x)/2;
                     float y=event.getY()-(size.y)/2+100;
                     if (x*x+y*y<=552*552) {
                         double[] rgb = ColorConverter.normalize_colors(ColorConverter.xyr_to_rgb(x,y,512));
-                        for(int i = 0; i <  currentColorValues.length; i++){
-                            currentColorValues[i].setText(String.valueOf((int)(rgb[i])));
-                        }
-                        currentColor.setBackgroundColor(ColorConverter.rgb_to_hex(rgb));
+                        updateRGBUI(rgb);
                         client.sendMessage(ColorConverter.rgb_to_message(rgb));
                     }
                 }
@@ -74,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!isConnected){
-                    client = new BasicClient("raspberrypiLights",6066);
-                    isConnected=true;
-                    status_text.setText("CONNECTED");
+                    client = new BasicClient("192.168.0.20",6066);
+                    client.start();
+                    updateConnectionStatus();
                 }
             }
         });
@@ -85,16 +85,45 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isConnected){
-                    try {
-                        client.close();
-                        isConnected = false;
-                        status_text.setText("DISCONNECTED");
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
+                    client.close();
+                    updateConnectionStatus();
                 }
             }
         });
 
     }
+
+    protected  void updateRGBUI(double[] rgb){
+        int[] rgbi = {(int)rgb[0],(int)rgb[1],(int)rgb[2]};
+        updateRGBUI(rgbi);
+    }
+
+    protected  void updateRGBUI(int[] rgb){
+        for(int i = 0; i <  currentColorValues.length; i++){
+            currentColorValues[i].setText(String.valueOf((rgb[i])));
+        }
+        currentColor.setBackgroundColor(ColorConverter.rgb_to_hex(rgb));
+    }
+
+    //should be replace with lang file
+    protected void updateConnectionStatus(){
+        if(client!=null){
+            this.isConnected = client.getConnetionStatus();
+            if(this.isConnected){
+                status_text.setText("CONNECTED");
+                if(client.init_data!=""){
+                    System.out.println(client.init_data);
+                    updateRGBUI(ColorConverter.parseData(client.init_data));
+                    client.init_data = "";
+                }
+            }else{
+                status_text.setText("DISCONNECTED");
+            }
+        }else{
+            status_text.setText("DISCONNECTED");
+            this.isConnected=false;
+        }
+
+    }
+
 }

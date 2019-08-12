@@ -89,12 +89,12 @@ public class ColorConverter{
     }
 
     //takes in (R,G,B) tuple and returns a hex string
-    public static int rgb_to_hex(double[] rgb) {
+    public static int rgb_to_hex(int[] rgb) {
         String output = "#";
         for(int i = 0; i < 3; i++) {
-            if(((int) rgb[i])<16)
+            if((rgb[i])<16)
                 output+="0";
-            output += Integer.toHexString(((int) rgb[i]));
+            output += Integer.toHexString((rgb[i]));
         }
         return Color.parseColor(output);
     }
@@ -110,5 +110,21 @@ public class ColorConverter{
         }
         return message;
     }
+
+    public static int[] parseData(String raw_input){
+        if(raw_input.length()!=9)
+            return null;
+
+        try{
+            Integer.parseInt(raw_input);
+        }catch(NumberFormatException | NullPointerException nfe) {
+            return null;
+        }
+        int[] rgb = {Integer.parseInt(raw_input.substring(0,3)),Integer.parseInt(raw_input.substring(3,6)),Integer.parseInt(raw_input.substring(6,9))};
+
+        return rgb;
+
+    }
+
 }
 
