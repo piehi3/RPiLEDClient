@@ -98,5 +98,17 @@ public class ColorConverter{
         }
         return Color.parseColor(output);
     }
+
+    public static String rgb_to_message(double[] rgb){
+        String message = "";
+        for (int i = 0; i < 3; i++){
+            if(rgb[i]<10)
+                message+="0";
+            if(rgb[i]<100)
+                message+="0";
+            message+=Integer.toString((int)rgb[i]);
+        }
+        return message;
+    }
 }
 
