@@ -2,12 +2,15 @@ package com.piehi3.rpiledclient;
 
 import android.graphics.Color;
 
-import java.lang.Math;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import java.lang.StringBuilder;
 
-public class ColorConverter{
+class ColorConverter{
 
     //no idea how this works, takes (h,s,v) tuple and outputs (r,g,b)
-    public static double[] hsv_to_rgb(double[] hsv){
+    static double[] hsv_to_rgb(@NotNull double[] hsv){
         double h,s,v;
         double r,g,b;
         r=0;
@@ -40,12 +43,11 @@ public class ColorConverter{
             r = c;
             b = x;
         }
-        double[] rgb = {(r+m)*255,(g+m)*255,(b+m)*255};
-        return rgb;
+        return new double[]{(r+m)*255,(g+m)*255,(b+m)*255};
     }
 
     //x,y and radius , and a parced value pos to hue and saturation
-    public static double[] xyr_to_hsv(double x,double y,double r) {
+    static double[] xyr_to_hsv(double x, double y, double r) {
         double s = 1;
         double theta = 0;
 
@@ -66,15 +68,16 @@ public class ColorConverter{
                 theta = Math.atan(y / x);
             }
         }
-        double[] hsv = {theta * 180 / Math.PI,Math.sqrt(x * x + y * y) / r, s};
-        return hsv;
+
+        return new double[]{theta * 180 / Math.PI,Math.sqrt(x * x + y * y) / r, s};
     }
 
-    public static double[] xyr_to_rgb(double x,double y,double r){
+    static double[] xyr_to_rgb(double x,double y,double r){
         return hsv_to_rgb(xyr_to_hsv(x,y,r));
     }
 
-    public static double[] normalize_colors(double[] rgb){
+    //clamps color value to b/w 0 and 255
+    static double[] normalize_colors(double[] rgb){
         double[] nrgb = {0,0,0};
         for(int i = 0; i < nrgb.length; i++){
             if(rgb[i]>=0){
@@ -89,7 +92,7 @@ public class ColorConverter{
     }
 
     //takes in (R,G,B) tuple and returns a hex string
-    public static int rgb_to_hex(int[] rgb) {
+    static int rgb_to_hex(int[] rgb) {
         String output = "#";
         for(int i = 0; i < 3; i++) {
             if((rgb[i])<16)
@@ -99,7 +102,9 @@ public class ColorConverter{
         return Color.parseColor(output);
     }
 
-    public static String rgb_to_message(double[] rgb){
+    //converts and packs an rgb value to a string of 9 numbers
+    //ex 255 50 6 -> "255050006"
+    static String rgb_to_message(double[] rgb){
         String message = "";
         for (int i = 0; i < 3; i++){
             if(rgb[i]<10)
@@ -111,7 +116,9 @@ public class ColorConverter{
         return message;
     }
 
-    public static int[] parseData(String raw_input){
+    //parse the packed data back to intergers
+    @Nullable
+    static int[] parseData(@NotNull String raw_input){
         if(raw_input.length()!=9)
             return null;
 
@@ -120,9 +127,8 @@ public class ColorConverter{
         }catch(NumberFormatException | NullPointerException nfe) {
             return null;
         }
-        int[] rgb = {Integer.parseInt(raw_input.substring(0,3)),Integer.parseInt(raw_input.substring(3,6)),Integer.parseInt(raw_input.substring(6,9))};
 
-        return rgb;
+        return new int[]{Integer.parseInt(raw_input.substring(0, 3)), Integer.parseInt(raw_input.substring(3, 6)), Integer.parseInt(raw_input.substring(6, 9))};
 
     }
 
