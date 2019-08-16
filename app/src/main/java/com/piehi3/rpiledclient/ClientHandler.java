@@ -1,30 +1,40 @@
 package com.piehi3.rpiledclient;
 
 
+import android.view.View;
+import android.widget.TextView;
+
 import java.io.*;
 import java.net.*;
 
-public class BasicClient extends Thread{
+public class ClientHandler extends Thread{
 
     Socket client;
     DataOutputStream data_out;
     DataInputStream data_in;
     String init_data;
+
+    ColorHandler color_handler;
+
+    TextView text_status;//displaying the current status of the connection
+
     private String message_out;
     private Boolean is_new_message;
     private String server_name;
     private int port;
-    private Boolean isConnected;
+    private Boolean is_connected;
 
 
-    public BasicClient(String server_name, int port){
+    public ClientHandler(String server_name, int port,View text_status){
 
         this.message_out = "";
         this.init_data="";
         this.is_new_message = false;
         this.server_name = server_name;
         this.port = port;
-        this.isConnected = false;
+        this.is_connected = false;
+
+        this.text_status = (TextView)text_status;
     }
 
     public void run() {
@@ -45,7 +55,8 @@ public class BasicClient extends Thread{
             this.data_in = new DataInputStream(input_stream);
             this.init_data = data_in.readUTF();
             System.out.println("Inital data " + this.init_data);
-            this.isConnected = true;
+            color_handler.setDisplayedRGB(ColorConverter.parseData(this.init_data));
+            changeConectionSatus(true);
 
             while (true){
 
@@ -71,10 +82,14 @@ public class BasicClient extends Thread{
         }
     }
 
+    public void close(){
+        sendMessage("exit");
+    }
+
     private void close_socket() throws IOException{
         data_out.writeUTF("close");
         client.close();
-        this.isConnected = false;
+        changeConectionSatus(false);
         System.out.println("Disconnected from server " + client.getRemoteSocketAddress());
     }
 
@@ -84,12 +99,23 @@ public class BasicClient extends Thread{
         return !(message.equals("exit")||message.equals("kill"));
     }
 
-    public void close(){
-        sendMessage("exit");
+    public void sendColorUpdate(int[] rgb){
+        System.out.println("pushing update to server " + color_handler.current_rgb[0] + " " + + color_handler.current_rgb[1] + " " + color_handler.current_rgb[2]);
+        this.sendMessage(ColorConverter.rgb_to_message(rgb));//queues the new rgb value to be pushed to the server
+    }
+
+    //TODO: add lang file
+    private void changeConectionSatus(boolean is_connected){
+        this.is_connected=is_connected;
+        if(is_connected){
+            text_status.setText("CONNECTED");
+        }else {
+            text_status.setText("DISCONNECTED");
+        }
     }
 
     public Boolean getConnetionStatus(){
-        return isConnected;
+        return is_connected;
     }
 
 }

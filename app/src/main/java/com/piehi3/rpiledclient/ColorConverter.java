@@ -104,14 +104,22 @@ class ColorConverter{
 
     //converts and packs an rgb value to a string of 9 numbers
     //ex 255 50 6 -> "255050006"
-    static String rgb_to_message(double[] rgb){
+    static int[] double_array_to_int(double[] darray){
+        int[] iarray = new int[darray.length];
+        for (int i = 0; i<darray.length; i++){
+            iarray[i] = (int)darray[i];
+        }
+        return iarray;
+    }
+
+    static String rgb_to_message(int[] rgb){
         String message = "";
         for (int i = 0; i < 3; i++){
             if(rgb[i]<10)
                 message+="0";
             if(rgb[i]<100)
                 message+="0";
-            message+=Integer.toString((int)rgb[i]);
+            message+=Integer.toString(rgb[i]);
         }
         return message;
     }
