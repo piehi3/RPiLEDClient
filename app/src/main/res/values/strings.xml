@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">RPi LED Client</string>
+    <string name="action_settings">Settings</string>
+    <string name="host_name_summery">Name of the host for RPiLEDServer</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="host_header">Host</string>
+
+    <!-- Host Preferences -->
+    <string name="host_name_title">Host Name</string>
+    <string name="host_name_summary">Name of host server of RPiLEDServer</string>
+    <string name="port_title">Port</string>
+    <string name="port_summary">Port open on the server</string>
+
 </resources>

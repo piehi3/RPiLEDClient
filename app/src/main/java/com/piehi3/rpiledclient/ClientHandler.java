@@ -73,7 +73,7 @@ public class ClientHandler extends Thread{
                         e.printStackTrace();
                     }
                 }
-                Thread.sleep(10);
+                Thread.sleep(10);//TODO: look into why this works
             }
 
 

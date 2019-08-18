@@ -1,20 +1,29 @@
 package com.piehi3.rpiledclient;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     Display display;//current screen display, need to get screen resolution and size
 
     //client side variable used for connection with the server
     ClientHandler client_handler;
+    String server_name;
+    int port;
+
     ColorHandler color_handler;
     RGBEditTextLisener[] text_listeners;
 
@@ -26,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);//sets the current activity as main
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        setupSharedPreferences();
 
         display = getWindowManager().getDefaultDisplay();//gets the current display
         //graps the size of current display size, used to calculate the center of the color wheel
@@ -60,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                         //calculates the rgb value of the xy point, maybe should change to just checking the pixel color?
                         int[] rgb = ColorConverter.double_array_to_int(ColorConverter.normalize_colors(ColorConverter.xyr_to_rgb(x, y, 512)));
                         color_handler.setDisplayedRGB(rgb);
-
                         client_handler.sendColorUpdate(rgb);
                     }
                 }
@@ -87,9 +100,57 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        //updateSharedPreferences(sharedPreferences);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(SettingsActivity.KEY_PREF_HOST_NAME)){
+            updateSharedPreferences(sharedPreferences);
+        }
+    }
+
+    private void updateSharedPreferences(SharedPreferences sharedPreferences){
+        server_name = sharedPreferences.getString(SettingsActivity.KEY_PREF_HOST_NAME,SettingsActivity.PREF_HOST_NAME_DEFAULT);
+        port = sharedPreferences.getInt(SettingsActivity.KEY_PREF_PORT,SettingsActivity.PREF_PORT_DEFAULT);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);//
+            startActivity(intent);//creats a new settings activity and pushes it to current
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     public void openNewConnection(){
         if(client_handler == null || !client_handler.getConnetionStatus()) {
-            client_handler = new ClientHandler("192.168.0.20", 6066, findViewById(R.id.textStatus));
+            client_handler = new ClientHandler(server_name, port, findViewById(R.id.textStatus));
             client_handler.start();
 
             for(int i = 0; i < 3; i++){
@@ -97,6 +158,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }
 
