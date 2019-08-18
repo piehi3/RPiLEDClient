@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceFragmentCompat;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -14,12 +15,16 @@ public class SettingsActivity extends AppCompatActivity {
 
     //port for host
     public static final String KEY_PREF_PORT = "port";
-    public static final int PREF_PORT_DEFAULT = 6066;
+    public static final String PREF_PORT_DEFAULT = "6066";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         //sets the new setting fragment as the main context of the activity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.settings, new SettingsFragment())

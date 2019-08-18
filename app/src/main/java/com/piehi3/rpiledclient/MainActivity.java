@@ -115,8 +115,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void updateSharedPreferences(SharedPreferences sharedPreferences){
         server_name = sharedPreferences.getString(SettingsActivity.KEY_PREF_HOST_NAME,SettingsActivity.PREF_HOST_NAME_DEFAULT);
-        port = sharedPreferences.getInt(SettingsActivity.KEY_PREF_PORT,SettingsActivity.PREF_PORT_DEFAULT);
-    }
+        try{
+            port = Integer.parseInt(sharedPreferences.getString(SettingsActivity.KEY_PREF_PORT,SettingsActivity.PREF_PORT_DEFAULT));
+        }catch(NumberFormatException e){
+            port = Integer.parseInt(SettingsActivity.PREF_PORT_DEFAULT);
+        }
+
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

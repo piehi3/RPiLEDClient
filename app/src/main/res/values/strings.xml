@@ -13,4 +13,21 @@
     <string name="port_title">Port</string>
     <string name="port_summary">Port open on the server</string>
 
+
+    <!-- display text -->
+    <string name="color_wheel_discription">A color wheel, red on the right, green on the bottom left and blue on the top left, all equally spaced</string>
+
+    <string name="display_text_red">Red: </string>
+    <string name="display_text_green">Green: </string>
+    <string name="display_text_blue">Blue: </string>
+
+    <string name="display_text_status">Status: </string>
+    <string name="display_text_disconnected">DISCONNECTED</string>
+    <string name="display_text_connected">CONNECTED</string>
+
+    <string name="display_button_disconnected">Disconnected</string>
+    <string name="display_button_connected">Connected</string>
+
+    <string name="display_text_current_color">Current Color</string>
+
 </resources>

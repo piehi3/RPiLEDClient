@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/color_wheel_discription"
         app:srcCompat="@drawable/color_wheel" />
 
     <LinearLayout
@@ -19,11 +20,11 @@
         android:layout_below="@id/textViewCurrentColor">
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/displayTextRed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:text="Red: " />
+            android:text="@string/display_text_red" />
 
         <EditText
             android:id="@+id/currentRedValue"
@@ -34,11 +35,11 @@
             android:text="255" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/displayTextGreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:text="Green: " />
+            android:text="@string/display_text_green" />
 
         <EditText
             android:id="@+id/currentGreenValue"
@@ -49,11 +50,11 @@
             android:text="255" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/displayTextBlue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:text="Blue: " />
+            android:text="@string/display_text_blue" />
 
         <EditText
             android:id="@+id/currentBlueValue"
@@ -73,7 +74,7 @@
         android:layout_centerHorizontal="true"
         android:layout_above="@id/buttonConnect"
         android:textSize="20dp"
-        android:text="Status: " />
+        android:text="@string/display_text_status" />
 
     <TextView
         android:id="@+id/textStatus"
@@ -82,7 +83,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:textSize="20dp"
-        android:text="DISCONNECTED" />
+        android:text="@string/display_text_disconnected" />
 
     <Button
         android:id="@+id/buttonConnect"
@@ -90,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:text="Connect" />
+        android:text="@string/display_button_connected" />
 
     <Button
         android:id="@+id/buttonDisconnect"
@@ -98,7 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="Disconnect" />
+        android:text="@string/display_button_disconnected" />
 
     <TextView
         android:id="@+id/textViewCurrentColor"
@@ -106,7 +107,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_centerHorizontal="true"
-        android:text="Current Color" />
+        android:text="@string/display_text_current_color" />
 
     <TextView
         android:id="@+id/currentColor"

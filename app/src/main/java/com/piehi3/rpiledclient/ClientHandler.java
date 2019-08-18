@@ -38,7 +38,6 @@ public class ClientHandler extends Thread{
     }
 
     public void run() {
-
         try{
             //sets up basic socket connection
             System.out.println("Connecting to " + server_name + " on port " + port);
