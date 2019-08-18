@@ -18,10 +18,14 @@ public class RGBEditTextLisener implements TextWatcher {
                               int count) {
         if(client_handler != null && client_handler.getConnetionStatus()){
             if(!s.equals("")) {
-            int new_color = Integer.parseInt(s.toString());
-                if(new_color>=0 && new_color<=255) {
-                    color_handler.current_rgb[rgb_index]=new_color;
-                    color_handler.text_display_current_color.setBackgroundColor(ColorConverter.rgb_to_hex(color_handler.current_rgb));
+                try {
+                    int new_color = Integer.parseInt(s.toString());
+                    if (new_color >= 0 && new_color <= 255) {
+                        color_handler.current_rgb[rgb_index] = new_color;
+                        color_handler.text_display_current_color.setBackgroundColor(ColorConverter.rgb_to_hex(color_handler.current_rgb));
+                    }
+                }catch (NumberFormatException e){
+                    e.printStackTrace();
                 }
             }
         }

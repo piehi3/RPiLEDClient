@@ -16,6 +16,8 @@ public class SettingsActivity extends AppCompatActivity {
     //port for host
     public static final String KEY_PREF_PORT = "port";
     public static final String PREF_PORT_DEFAULT = "6066";
+    public static final String PREF_DEF_COLOR_ON = "255255255";
+    public static final String PREF_DEF_COLOR_OFF = "000000000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -31,6 +31,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     Button button_connect;
     Button button_disconnect;
 
+    //used to turn on and off the lights
+    Button button_on;
+    Button button_off;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         //debug
         this.port = 6066;
-        this.server_name = "192.168.0.20";
+        this.server_name = "192.168.2.158";
 
         display = getWindowManager().getDefaultDisplay();//gets the current display
         //graps the size of current display size, used to calculate the center of the color wheel
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         //get instances of the various views
         button_connect = findViewById(R.id.buttonConnect);
         button_disconnect = findViewById(R.id.buttonDisconnect);
+        button_on = findViewById(R.id.button_on);
+        button_off = findViewById(R.id.button_off);
 
         color_handler =  new ColorHandler(findViewById(R.id.colorWheel),
                 findViewById(R.id.currentColor),findViewById(R.id.currentRedValue),
@@ -100,6 +106,30 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 if(client_handler!=null) {
                     if (client_handler.getConnetionStatus()) {
                         client_handler.close();
+                    }
+                }
+            }
+        });
+
+        button_on.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(client_handler!=null) {
+                    if (client_handler.getConnetionStatus()) {
+                        client_handler.sendMessage(SettingsActivity.PREF_DEF_COLOR_ON);
+                        color_handler.setDisplayedRGB(ColorConverter.parseData(SettingsActivity.PREF_DEF_COLOR_ON));
+                    }
+                }
+            }
+        });
+
+        button_off.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(client_handler!=null) {
+                    if (client_handler.getConnetionStatus()) {
+                        client_handler.sendMessage(SettingsActivity.PREF_DEF_COLOR_OFF);
+                        color_handler.setDisplayedRGB(ColorConverter.parseData(SettingsActivity.PREF_DEF_COLOR_OFF));
                     }
                 }
             }

@@ -28,6 +28,9 @@
     <string name="display_button_disconnected">Disconnected</string>
     <string name="display_button_connected">Connected</string>
 
+    <string name="display_button_on">ON</string>
+    <string name="display_button_off">OFF</string>
+
     <string name="display_text_current_color">Current Color</string>
 
 </resources>
