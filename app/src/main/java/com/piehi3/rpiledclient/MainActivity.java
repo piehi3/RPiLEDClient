@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         setupSharedPreferences();
 
+        //debug
+        this.port = 6066;
+        this.server_name = "192.168.0.20";
+
         display = getWindowManager().getDefaultDisplay();//gets the current display
         //graps the size of current display size, used to calculate the center of the color wheel
         final Point size = new Point();
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         color_handler =  new ColorHandler(findViewById(R.id.colorWheel),
                 findViewById(R.id.currentColor),findViewById(R.id.currentRedValue),
                 findViewById(R.id.currentGreenValue),findViewById(R.id.currentBlueValue));
+
+        color_handler.current_activity = this;
 
         for(int i = 0; i < 3; i++){
             text_listeners[i] = new RGBEditTextLisener(i,color_handler);
@@ -101,27 +107,24 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private void setupSharedPreferences() {
+        System.out.println("Loading preferences");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        //updateSharedPreferences(sharedPreferences);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals(SettingsActivity.KEY_PREF_HOST_NAME)){
-            updateSharedPreferences(sharedPreferences);
+            server_name = sharedPreferences.getString(SettingsActivity.KEY_PREF_HOST_NAME,SettingsActivity.PREF_HOST_NAME_DEFAULT);
+        }
+        if(key.equals(SettingsActivity.KEY_PREF_PORT)){
+            try{
+                port = Integer.parseInt(sharedPreferences.getString(SettingsActivity.KEY_PREF_PORT,SettingsActivity.PREF_PORT_DEFAULT));
+            }catch(NumberFormatException e){
+                port = Integer.parseInt(SettingsActivity.PREF_PORT_DEFAULT);
+            }
         }
     }
-
-    private void updateSharedPreferences(SharedPreferences sharedPreferences){
-        server_name = sharedPreferences.getString(SettingsActivity.KEY_PREF_HOST_NAME,SettingsActivity.PREF_HOST_NAME_DEFAULT);
-        try{
-            port = Integer.parseInt(sharedPreferences.getString(SettingsActivity.KEY_PREF_PORT,SettingsActivity.PREF_PORT_DEFAULT));
-        }catch(NumberFormatException e){
-            port = Integer.parseInt(SettingsActivity.PREF_PORT_DEFAULT);
-        }
-
-}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,9 +158,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     public void openNewConnection(){
         if(client_handler == null || !client_handler.getConnetionStatus()) {
-            client_handler = new ClientHandler(server_name, port, findViewById(R.id.textStatus));
+            client_handler = new ClientHandler(server_name, port, findViewById(R.id.textStatus),this);
             client_handler.start();
-
+            client_handler.color_handler = color_handler;
             for(int i = 0; i < 3; i++){
                 text_listeners[i].client_handler = client_handler;
             }

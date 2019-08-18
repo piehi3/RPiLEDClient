@@ -29,7 +29,6 @@ public class RGBEditTextLisener implements TextWatcher {
 
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-    //TODO: push updates to server
     public void afterTextChanged(Editable s) {
         if(client_handler != null && client_handler.getConnetionStatus()){
             client_handler.sendColorUpdate(color_handler.current_rgb);

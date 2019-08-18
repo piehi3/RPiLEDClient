@@ -1,11 +1,14 @@
 package com.piehi3.rpiledclient;
 
+import android.app.Activity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ColorHandler {
+
+    Activity current_activity;
 
     ImageView image_color_wheel;//instance of the color wheel
     TextView text_display_current_color; //has the background color of the current rgb color
@@ -34,10 +37,16 @@ public class ColorHandler {
         current_rgb[0]=r;
         current_rgb[1]=g;
         current_rgb[2]=b;
-        text_display_current_color.setBackgroundColor(ColorConverter.rgb_to_hex(current_rgb));
-        for(int i = 0; i <  text_current_rgb_values.length; i++){
-            text_current_rgb_values[i].setText(String.valueOf((current_rgb[i])));
-        }
+
+        current_activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                text_display_current_color.setBackgroundColor(ColorConverter.rgb_to_hex(current_rgb));
+                for(int i = 0; i <  text_current_rgb_values.length; i++){
+                    text_current_rgb_values[i].setText(String.valueOf((current_rgb[i])));
+                }
+            }
+        });
     }
 
     public void setDisplayedRGB(int[] rgb){

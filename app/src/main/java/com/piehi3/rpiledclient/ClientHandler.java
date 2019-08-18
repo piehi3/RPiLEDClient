@@ -1,6 +1,7 @@
 package com.piehi3.rpiledclient;
 
 
+import android.app.Activity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ public class ClientHandler extends Thread{
     String init_data;
 
     ColorHandler color_handler;
+    Activity current_activity;
 
     TextView text_status;//displaying the current status of the connection
 
@@ -25,7 +27,7 @@ public class ClientHandler extends Thread{
     private Boolean is_connected;
 
 
-    public ClientHandler(String server_name, int port,View text_status){
+    public ClientHandler(String server_name, int port,View text_status,Activity current_activity){
 
         this.message_out = "";
         this.init_data="";
@@ -33,6 +35,7 @@ public class ClientHandler extends Thread{
         this.server_name = server_name;
         this.port = port;
         this.is_connected = false;
+        this.current_activity = current_activity;
 
         this.text_status = (TextView)text_status;
     }
@@ -72,7 +75,7 @@ public class ClientHandler extends Thread{
                         e.printStackTrace();
                     }
                 }
-                Thread.sleep(10);//TODO: look into why this works
+                Thread.sleep(10);//stop this thread from drawing too many resources and pings the server too often
             }
 
 
@@ -103,14 +106,19 @@ public class ClientHandler extends Thread{
         this.sendMessage(ColorConverter.rgb_to_message(rgb));//queues the new rgb value to be pushed to the server
     }
 
-    //TODO: add lang file
-    private void changeConectionSatus(boolean is_connected){
+    private void changeConectionSatus(final boolean is_connected){
         this.is_connected=is_connected;
-        if(is_connected){
-            text_status.setText("CONNECTED");
-        }else {
-            text_status.setText("DISCONNECTED");
-        }
+        current_activity.runOnUiThread(new Runnable() {
+            final boolean CONNECTION = is_connected;//why must java be like this
+            @Override
+            public void run() {
+                if(CONNECTION){
+                    text_status.setText("CONNECTED");
+                }else {
+                    text_status.setText("DISCONNECTED");
+                }
+            }
+        });
     }
 
     public Boolean getConnetionStatus(){
